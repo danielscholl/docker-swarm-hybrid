@@ -48,7 +48,7 @@
       "metadata": {
         "description": "Virtual Machine 1 Server Name."
       },
-      "defaultValue": "db",
+      "defaultValue": "vm",
       "minLength": 1
     },
     "vmSize": {

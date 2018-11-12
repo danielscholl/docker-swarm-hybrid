@@ -68,7 +68,7 @@
         },
         "type": "string",
         "minLength": 1,
-        "defaultValue": "be"
+        "defaultValue": "manager"
       },
       "managerServerSize": {
         "metadata": {
@@ -231,7 +231,7 @@
               "value": "[parameters('adminUserName')]"
             },
             "sshKeyData": {
-              "value": "[parameters('adminUserName')]"
+              "value": "[parameters('adminSshKey')]"
             }
           }
         }
