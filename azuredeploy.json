@@ -91,6 +91,13 @@
           "description": "Admin user account name."
         },
         "minLength": 5
+      },
+      "adminSshKey": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Admin user public ssh key."
+        },
+        "minLength": 10
       }
     },
     "variables": {
@@ -183,10 +190,10 @@
               "value": "[reference('TemplateVNet').outputs.subnets.value.subnetId]"
             },
             "storageAccount": {
-              "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
+              "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
             },
             "storageKey": {
-              "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.key]"
+              "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
             },
             "vmName": {
               "value": "[parameters('managerNamePrefix')]"
@@ -201,12 +208,7 @@
               "value": "[parameters('adminUserName')]"
             },
             "sshKeyData": {
-              "reference": {
-                "keyVault": {
-                  "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-                },
-                "secretName": "sshPublicKey"
-              }
+              "value": "[parameters('adminUserName')]"
             }
           }
         }

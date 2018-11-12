@@ -10,6 +10,9 @@
     },
     "subnetPrefix": {
       "value": "10.1.0.0/25"
+    },
+    "adminSshKey": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDN/7bcuLIIphEg2F6Jd4BWDaxxF1xuXaYv87FVf5eSma7JyL9b6zc0RjEXViBFmbqzpwaNunugQBV5BjYRjPPOW0MqQFwlFlGTHbzWC9BdybHdAd056w6om/JDoLxzuHV6UWSl9cDEgbQp0StIhvSCXdQquIB1obARfD0ZeMTF+L+uZHpgiidlCMDIMNSaK6Yb/YeZeGkTXLPjiaHKmLOhEZR6V7hk/GR1qHzVDRSy04lYtqSwsHGJ7zVPqduze13pxcn1JGHlJuh51rIuSjK/mWwZWPj7huYn0It2Vfm802PKklXcNbBlDNOWf7t/WUYmYNONwof4DF6fNiL/w+9l"
     }
   }
 }

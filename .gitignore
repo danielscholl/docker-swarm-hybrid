@@ -5,3 +5,4 @@ arm-templates/*.params.json
 .ssh/
 .env
 .envrc
+params.json
