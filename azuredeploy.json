@@ -172,8 +172,7 @@
         "resourceGroup": "[variables('defaultGroup')]",
         "dependsOn": [
           "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
-          "TemplatePrivateStorage",
-          "TemplatePrivateKeyVault",
+          "TemplateStorage",
           "TemplateVNet"
         ],
         "properties": {
