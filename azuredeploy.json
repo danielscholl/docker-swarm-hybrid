@@ -62,6 +62,29 @@
           "description": "Subnet 1 Address Prefix CIDR"
         }
       },
+      "managerNamePrefix": {
+        "metadata": {
+          "description": "Manager Virtual Machine Name Prefix."
+        },
+        "type": "string",
+        "minLength": 1,
+        "defaultValue": "be"
+      },
+      "managerServerSize": {
+        "metadata": {
+          "description": "Manager Virtual Machine Size."
+        },
+        "type": "string",
+        "defaultValue": "Standard_DS2_v2"
+      },
+      "managerServerCount": {
+        "type": "int",
+        "metadata": {
+          "description": "Number of machines to deploy."
+        },
+        "defaultValue": 2,
+        "minValue": 2
+      },
       "adminUserName": {
         "type": "string",
         "metadata": {
@@ -131,6 +154,59 @@
             },
             "servicePrincipalObjectId": {
               "value": "[parameters('servicePrincipalObjectId')]"
+            }
+          }
+        }
+      },
+      {
+        "name": "TemplateLinuxVMasManager",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "resourceGroup": "[variables('defaultGroup')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
+          "TemplatePrivateStorage",
+          "TemplatePrivateKeyVault",
+          "TemplateVNet"
+        ],
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('templateURL'), 'deployLinuxVMas.json')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "prefix": {
+              "value": "[parameters('Initials')]"
+            },
+            "subnetId": {
+              "value": "[reference('TemplateVNet').outputs.subnets.value.subnetId]"
+            },
+            "storageAccount": {
+              "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
+            },
+            "storageKey": {
+              "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.key]"
+            },
+            "vmName": {
+              "value": "[parameters('managerNamePrefix')]"
+            },
+            "vmSize": {
+              "value": "[parameters('managerServerSize')]"
+            },
+            "numberOfInstances": {
+              "value": "[parameters('managerServerCount')]"
+            },
+            "adminUserName": {
+              "value": "[parameters('adminUserName')]"
+            },
+            "sshKeyData": {
+              "reference": {
+                "keyVault": {
+                  "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+                },
+                "secretName": "sshPublicKey"
+              }
             }
           }
         }

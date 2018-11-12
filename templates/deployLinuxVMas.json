@@ -1,0 +1,235 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 5
+    },
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID to associate VM to."
+      }
+    },
+    "loadbalancerId": {
+      "type": "string",
+      "metadata": {
+        "description": "Load Balancer Id to associate VM to."
+      }
+    },
+    "storageAccount": {
+      "type": "string",
+      "metadata": {
+        "description": "Diagnostics Storage Account Name"
+      }
+    },
+    "storageKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Diagnostics Storage Account Key"
+      }
+    },
+    "numberOfInstances": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VMs to deploy, limit 5 since this sample is using a single storage account"
+      },
+      "defaultValue": 2,
+      "minValue": 2,
+      "maxValue": 5
+    },
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine 1 Server Name."
+      },
+      "defaultValue": "db",
+      "minLength": 1
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "The virtual machine server size."
+      },
+      "defaultValue": "Standard_B2s"
+    },
+    "adminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Linux servers admin user account name."
+      },
+      "defaultValue": "azureuser",
+      "minLength": 1
+    },
+    "sshKeyData": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH rsa public key file as a string."
+      }
+    },
+    "ubuntuOSVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+      },
+      "defaultValue": "16.04.0-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.5-LTS",
+        "15.10",
+        "16.04.0-LTS"
+      ]
+    }
+  },
+  "variables": {
+    "availabilitySetName": "[concat(parameters('prefix'), '-', parameters('vmName'), '-as')]",
+    "sshKeyPath": "[concat('/home/',parameters('adminUserName'),'/.ssh/authorized_keys')]"
+  },
+  "resources": [
+    {
+      "comments": "## Availability Set ##",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('availabilitySetName')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 2,
+        "managed": true
+      }
+    },
+    {
+      "comments": "## Network Interface ##",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(parameters('prefix'), '-', parameters('vmName'), '-vm', copyindex(), '-nic')]",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "copy": {
+        "name": "nicLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[parameters('subnetId')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(parameters('loadbalancerId'), '/backendAddressPools/lbBackEnd')]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "comments": "## Virtual Machine ##",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('prefix'), '-', parameters('vmName'), '-vm', copyIndex())]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "virtualMachineLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]",
+        "nicLoop"
+      ],
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[concat('vm', copyIndex())]",
+          "adminUsername": "[parameters('adminUserName')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[variables('sshKeyPath')]",
+                  "keyData": "[parameters('sshKeyData')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(parameters('prefix'), '-', parameters('vmName'), '-vm', copyindex(), '-nic'))]"
+            }
+          ]
+        }
+      },
+      "resources": []
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('prefix'), '-', parameters('vmName'), '-vm', copyIndex(), '/LinuxDiagnostic')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "extLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "dependsOn": [
+        "virtualMachineLoop"
+      ],
+      "properties": {
+        "publisher": "Microsoft.OSTCExtensions",
+        "type": "LinuxDiagnostic",
+        "typeHandlerVersion": "2.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "storageAccount": "[parameters('storageAccount')]"
+        },
+        "protectedSettings": {
+          "storageAccountName": "2016-04-30-preview",
+          "storageAccountKey": "[parameters('storageKey')]",
+          "storageAccountEndPoint": "https://core.windows.net"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "availabilitySet": {
+      "type": "object",
+      "value": {
+        "name": "[variables('AvailabilitySetName')]"
+      }
+    },
+    "virtualMachine": {
+      "type": "object",
+      "value": {
+        "instanceCount": "[parameters('numberOfInstances')]"
+      }
+    }
+  }
+}
