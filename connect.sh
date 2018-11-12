@@ -18,8 +18,7 @@ if [ -z $UNIQUE ]; then
   usage;
 fi
 if [ -z ${AZURE_LOCATION} ]; then
-  tput setaf 1; echo 'ERROR: Global Variable AZURE_LOCATION not set'; tput sgr0
-  exit 1;
+  AZURE_LOCATION="eastus"
 fi
 if [ ! -z $1 ]; then CATEGORY=$1; fi
 if [ -z $CATEGORY ]; then
@@ -33,10 +32,11 @@ fi
 #////////////////////////////////
 BASE=${PWD##*/}
 RESOURCE_GROUP=${UNIQUE}-${BASE}
+AZURE_USER=$(az account show --query user.name -otsv)
+LINUX_USER=(${AZURE_USER//@/ })
 
 echo "Retrieving IP Address for ${CATEGORY}-vm${INSTANCE} in " ${RESOURCE_GROUP}
-exit
-IP=$(az network public-ip show --resource-group ${RESOURCE_GROUP} --name lb-ip --query ipAddress -otsv)
+IP=$(az network public-ip show --resource-group ${RESOURCE_GROUP} --name ${UNIQUE}-lb-ip --query ipAddress -otsv)
 echo 'Connecting to' $USER@$IP
 
 SSH_KEY="~/.ssh/id_rsa"
@@ -45,4 +45,4 @@ if [ -f .ssh/id_rsa ]; then
 fi
 
 PORT=$((5000 + $INSTANCE))
-ssh -i ${SSH_KEY} $USER@$IP -A -p $PORT
+ssh $LINUX_USER@$IP -A -p $PORT

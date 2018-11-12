@@ -127,6 +127,11 @@
                 {
                   "id": "[concat(parameters('loadbalancerId'), '/backendAddressPools/lbBackEnd')]"
                 }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[concat(parameters('loadbalancerId'), '/inboundNatRules/ssh-vm', copyindex())]"
+                }
               ]
             }
           }

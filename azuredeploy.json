@@ -189,7 +189,8 @@
         "dependsOn": [
           "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
           "TemplateStorage",
-          "TemplateVNet"
+          "TemplateVNet",
+          "TemplateLoadBalancer"
         ],
         "properties": {
           "mode": "Incremental",
