@@ -39,7 +39,7 @@
   "variables": {
     "vnetName": "[concat(parameters('prefix'), '-vnet')]",
     "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-    "subnetName": "containertier",
+    "subnetName": "subnet",
     "subNetId": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
     "nsgName": "[concat(variables('vnetName'), '-', variables('subnetName'), '-nsg')]",
     "contributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]"
