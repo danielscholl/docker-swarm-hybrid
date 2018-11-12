@@ -37,7 +37,7 @@
         "displayName": "Public IP Address"
       },
       "properties": {
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
