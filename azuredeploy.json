@@ -166,6 +166,27 @@
         }
       },
       {
+        "name": "TemplateLoadBalancer",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "resourceGroup": "[variables('defaultGroup')]",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "prefix": {
+              "value": "[parameters('initials')]"
+            },
+            "numberOfInstances": {
+              "value": "[parameters('managerServerCount')]"
+            }
+          }
+        }
+      },
+      {
         "name": "TemplateLinuxVMasManager",
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2017-05-10",
@@ -187,6 +208,9 @@
             },
             "subnetId": {
               "value": "[reference('TemplateVNet').outputs.subnets.value.subnetId]"
+            },
+            "loadBalancerId": {
+              "value": "[reference('TemplateLoadBalancer').outputs.loadBalancer.value.id]"
             },
             "storageAccount": {
               "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
