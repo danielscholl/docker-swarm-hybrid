@@ -49,6 +49,10 @@
       "tags": {
         "displayName": "Internal Load Balancer"
       },
+      "sku": {
+        "name": "Standard",
+        "tier": "Regional"
+      },
       "properties": {
         "frontendIPConfigurations": [
           {
