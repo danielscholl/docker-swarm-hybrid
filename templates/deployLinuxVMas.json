@@ -129,7 +129,7 @@
               ],
               "loadBalancerInboundNatRules": [
                 {
-                  "id": "[concat(parameters('loadbalancerId'), '/inboundNatRules/ssh-vm', copyindex())]"
+                  "id": "[concat(parameters('loadbalancerId'), '/inboundNatRules/', parameters('vmName'), '-ssh-vm', copyindex())]"
                 }
               ]
             }

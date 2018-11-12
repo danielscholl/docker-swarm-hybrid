@@ -127,12 +127,12 @@
     },
     {
       "comments": "## SSH NAT Inbound Rules ##",
-      "name": "[concat(variables('LBName'), '/', 'ssh-vm', copyIndex())]",
+      "name": "[concat(variables('LBName'), '/', 'manager-ssh-vm', copyIndex())]",
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
       "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "lbNatLoop",
+        "name": "lbManagerNatLoop",
         "count": "[parameters('numberOfInstances')]"
       },
       "dependsOn": [
@@ -144,6 +144,29 @@
         },
         "protocol": "tcp",
         "frontendPort": "[copyIndex(5000)]",
+        "backendPort": 22,
+        "enableFloatingIP": false
+      }
+    },
+    {
+      "comments": "## SSH NAT Inbound Rules ##",
+      "name": "[concat(variables('LBName'), '/', 'worker-ssh-vm', copyIndex())]",
+      "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "lbWorkerNatLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/loadBalancers/', variables('LBName'))]"
+      ],
+      "properties": {
+        "frontendIPConfiguration": {
+          "id": "[concat(variables('LBId'), '/frontendIpConfigurations/lbFrontEnd')]"
+        },
+        "protocol": "tcp",
+        "frontendPort": "[copyIndex(6000)]",
         "backendPort": 22,
         "enableFloatingIP": false
       }
