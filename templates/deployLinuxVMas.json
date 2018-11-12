@@ -84,6 +84,12 @@
         "15.10",
         "16.04.0-LTS"
       ]
+    },
+    "customData": {
+      "type": "string",
+      "metadata": {
+        "description": "Cloud Init Script in String Format"
+      }
     }
   },
   "variables": {
@@ -162,6 +168,7 @@
         "osProfile": {
           "computerName": "[concat(parameters('vmName'), '-vm', copyIndex())]",
           "adminUsername": "[parameters('adminUserName')]",
+          "customData": "[parameters('customData')]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
@@ -194,6 +201,26 @@
         }
       },
       "resources": []
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmName'), '-vm', copyIndex(), '/CustmScript')]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "virtualMachineLoop"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": { },
+        "protectedSettings": {
+           "commandToExecute": "sh docker.sh",
+           "fileUris": ["https://raw.githubusercontent.com/danielscholl/docker-swarm-hybrid/master/docker.sh"]
+        }
+      }
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
