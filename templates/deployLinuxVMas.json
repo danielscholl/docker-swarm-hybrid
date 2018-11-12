@@ -198,8 +198,12 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('vmName'), '-vm', copyIndex(), '/CustmScript')]",
-      "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "dockerLoop",
+        "count": "[parameters('numberOfInstances')]"
+      },
       "dependsOn": [
         "virtualMachineLoop"
       ],
