@@ -84,12 +84,6 @@
         "15.10",
         "16.04.0-LTS"
       ]
-    },
-    "customData": {
-      "type": "string",
-      "metadata": {
-        "description": "Cloud Init Script in String Format"
-      }
     }
   },
   "variables": {
@@ -168,7 +162,6 @@
         "osProfile": {
           "computerName": "[concat(parameters('vmName'), '-vm', copyIndex())]",
           "adminUsername": "[parameters('adminUserName')]",
-          "customData": "[parameters('customData')]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
