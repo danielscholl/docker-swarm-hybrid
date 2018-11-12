@@ -77,6 +77,29 @@
         "defaultValue": 2,
         "minValue": 2
       },
+      "workerNamePrefix": {
+        "metadata": {
+          "description": "Manager Virtual Machine Name Prefix."
+        },
+        "type": "string",
+        "minLength": 1,
+        "defaultValue": "worker"
+      },
+      "workerServerSize": {
+        "metadata": {
+          "description": "Manager Virtual Machine Size."
+        },
+        "type": "string",
+        "defaultValue": "Standard_DS2_v2"
+      },
+      "workerServerCount": {
+        "type": "int",
+        "metadata": {
+          "description": "Number of machines to deploy."
+        },
+        "defaultValue": 2,
+        "minValue": 2
+      },
       "adminUserName": {
         "type": "string",
         "metadata": {
@@ -222,6 +245,57 @@
             },
             "numberOfInstances": {
               "value": "[parameters('managerServerCount')]"
+            },
+            "adminUserName": {
+              "value": "[parameters('adminUserName')]"
+            },
+            "sshKeyData": {
+              "value": "[parameters('adminSshKey')]"
+            }
+          }
+        }
+      },
+      {
+        "name": "TemplateLinuxVMasWorker",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "resourceGroup": "[variables('defaultGroup')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
+          "TemplateStorage",
+          "TemplateVNet",
+          "TemplateLoadBalancer"
+        ],
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('templateURL'), 'deployLinuxVMas.json')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "prefix": {
+              "value": "[string(parameters('random'))]"
+            },
+            "subnetId": {
+              "value": "[reference('TemplateVNet').outputs.subnets.value.subnetId]"
+            },
+            "loadBalancerId": {
+              "value": "[reference('TemplateLoadBalancer').outputs.loadBalancer.value.id]"
+            },
+            "storageAccount": {
+              "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+            },
+            "storageKey": {
+              "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
+            },
+            "vmName": {
+              "value": "[parameters('workerNamePrefix')]"
+            },
+            "vmSize": {
+              "value": "[parameters('workerServerSize')]"
+            },
+            "numberOfInstances": {
+              "value": "[parameters('workerServerCount')]"
             },
             "adminUserName": {
               "value": "[parameters('adminUserName')]"
