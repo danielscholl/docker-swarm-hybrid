@@ -27,8 +27,11 @@
       "comments": "## Public IP ##",
       "name": "[variables('PublicIpName')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "location": "[resourceGroup().location]",
       "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard"
+      },
       "dependsOn": [],
       "tags": {
         "displayName": "Public IP Address"
@@ -43,15 +46,14 @@
       "type": "Microsoft.Network/loadBalancers",
       "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard"
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('PublicIpName'))]"
       ],
       "tags": {
         "displayName": "Internal Load Balancer"
-      },
-      "sku": {
-        "name": "Standard",
-        "tier": "Regional"
       },
       "properties": {
         "frontendIPConfigurations": [
