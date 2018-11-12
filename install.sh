@@ -14,15 +14,15 @@ usage() { echo "Usage: install.sh " 1>&2; exit 1; }
 
 if [ -f ./.envrc ]; then source ./.envrc; fi
 
-if [ ! -z $1 ]; then INITIALS=$1; fi
-if [ -z $INITIALS ]; then
-  INITIALS="tsp"
-fi
-
 if [ -z $AZURE_LOCATION ]; then
   AZURE_LOCATION="eastus"
 fi
+if [ -z $UNIQUE ]; then
+  UNIQUE=$(shuf -i 100-999 -n 1)
+fi
 
+BASE=${PWD##*/}
+PRINCIPAL_NAME=${UNIQUE}-${BASE}
 
 ###############################
 ## FUNCTIONS                 ##
@@ -31,26 +31,19 @@ fi
 function CreateServicePrincipal() {
     # Required Argument $1 = PRINCIPAL_NAME
 
-    if [ -z $1 ]; then
-        tput setaf 1; echo 'ERROR: Argument $1 (PRINCIPAL_NAME) not received'; tput sgr0
-        exit 1;
-    fi
-
     local _result=$(az ad sp list --display-name $1 --query [].appId -otsv)
     if [ "$_result"  == "" ]
     then
       CLIENT_SECRET=$(az ad sp create-for-rbac \
-        --name $PrincipalName \
+        --name $PRINCIPAL_NAME \
         --skip-assignment \
         --query password -otsv)
       CLIENT_ID=$(az ad sp list \
-        --display-name $PrincipalName \
+        --display-name $PRINCIPAL_NAME \
         --query [].appId -otsv)
       OBJECT_ID=$(az ad sp list \
-        --display-name $PrincipalName \
+        --display-name $PRINCIPAL_NAME \
         --query [].objectId -otsv)
-      UNIQUE=$(shuf -i 100-999 -n 1)
-
 
       echo "" >> .envrc
       echo "export CLIENT_ID=${CLIENT_ID}" >> .envrc
@@ -71,11 +64,6 @@ function CreateServicePrincipal() {
 
         if [ -z $OBJECT_ID ]; then
           tput setaf 1; echo 'ERROR: Principal exists but OBJECT_ID not provided' ; tput sgr0
-          exit 1;
-        fi
-
-        if [ -z $UNIQUE ]; then
-          tput setaf 1; echo 'ERROR: UNIQUE not provided' ; tput sgr0
           exit 1;
         fi
     fi
@@ -103,8 +91,7 @@ function CreateSSHKeys() {
 ###############################
 
 tput setaf 2; echo 'Creating Service Principal...' ; tput sgr0
-PrincipalName="$INITIALS-swarm-hybrid"
-CreateServicePrincipal $PrincipalName
+CreateServicePrincipal $PRINCIPAL_NAME
 
 tput setaf 2; echo 'Creating SSH Keys...' ; tput sgr0
 AZURE_USER=$(az account show --query user.name -otsv)
@@ -120,5 +107,5 @@ az deployment create --template-file azuredeploy.json  \
   --parameters servicePrincipalClientId=$CLIENT_ID \
   --parameters servicePrincipalClientKey=$CLIENT_SECRET \
   --parameters servicePrincipalObjectId=$OBJECT_ID \
-  --parameters initials=$INITIALS --parameters random=$UNIQUE \
+  --parameters random=$UNIQUE \
   --parameters adminUserName=$LINUX_USER
