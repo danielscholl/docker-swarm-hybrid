@@ -83,6 +83,13 @@
         "16.04.0-LTS",
         "18.04-LTS"
       ]
+    },
+    "customScript": {
+      "type": "string",
+      "metadata": {
+        "description": "The custom Script for running on machines"
+      },
+      "defaultValue": "H4sIANwZ6lsCA41RwUoDMRA9u18xtoLtIc1FPAgeRKUIHoTiSUVmk9ltaJqEZNa24Meb7C69iMWcJvNm3puZNz2XtXGyxrSuqunZa9DIBAHVBlsC4zTtKwwsWmLoerCUPbnEaC2w9zYdcTNmxQHeK8ivABzRpeAjizVzSCOiUCiKbBqjMuUx20U7hsk3vMNIIkQfSiUlofx2613Rv9MaHrzaULxM4JvMYtDC8mUJGzpUPY1o0uoZes0bKbXfOetRL3TftchU0hrX7WVXd4472YYWvvuBMwNg5hdFaEXcBchr1ZYgUvBVhkQpK59k2Mdx2YmmGt4wqvUtbvX11ce/tYf+i5lN9WckS5gIhErzIT9oT/4yB2bYonHzEybZcmGGL4rJeJfPNZ4O7h9/WTeMmL3JJlY/PoyZxBwCAAA="
     }
   },
   "variables": {
@@ -213,8 +220,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": { },
         "protectedSettings": {
-           "commandToExecute": "sh docker.sh",
-           "fileUris": ["https://raw.githubusercontent.com/danielscholl/docker-swarm-hybrid/master/docker.sh"]
+          "script": "[parameters('customScript')]"
         }
       }
     },
