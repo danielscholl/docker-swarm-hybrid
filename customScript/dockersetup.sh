@@ -1,4 +1,5 @@
 #!/bin/bash
+# cat dockerstup.sh | gzip -9 | base64 -w0
 
 #	Update package index
 apt-get update

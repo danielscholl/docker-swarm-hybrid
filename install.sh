@@ -146,8 +146,8 @@ LB_IP=$(az network public-ip show \
 # Ansible Inventory
 tput setaf 2; echo 'Creating the ansible inventory files...' ; tput sgr0
 cat > ${INVENTORY}/hosts << EOF
-$(for (( c=0; c<$MANAGERS; c++ )); do echo "manager-vm$c ansible_host=$LB_IP ansible_port=$(($MANAGER_PORT + $c))"; done)
-$(for (( c=0; c<$WORKERS; c++ )); do echo "worker-vm$c ansible_host=$LB_IP ansible_port=$(($WORKER_PORT + $c))"; done)
+$(for (( c=0; c<$MANAGERS; c++ )); do echo "manager-vm$c ansible_host=$LB_IP ansible_port=$(($MANAGER_PORT + $c)) $LINUX_USER"; done)
+$(for (( c=0; c<$WORKERS; c++ )); do echo "worker-vm$c ansible_host=$LB_IP ansible_port=$(($WORKER_PORT + $c)) $LINUX_USER"; done)
 
 [manager]
 $(for (( c=0; c<$MANAGERS; c++ )); do echo "manager-vm$c"; done)

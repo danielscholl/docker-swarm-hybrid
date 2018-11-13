@@ -84,12 +84,19 @@
         "18.04-LTS"
       ]
     },
+    "dockerSetup": {
+      "type": "string",
+      "metadata": {
+        "description": "Custom Script dockersetup.sh"
+      },
+      "defaultValue": "H4sIANwZ6lsCA41RwUoDMRA9u18xtoLtIc1FPAgeRKUIHoTiSUVmk9ltaJqEZNa24Meb7C69iMWcJvNm3puZNz2XtXGyxrSuqunZa9DIBAHVBlsC4zTtKwwsWmLoerCUPbnEaC2w9zYdcTNmxQHeK8ivABzRpeAjizVzSCOiUCiKbBqjMuUx20U7hsk3vMNIIkQfSiUlofx2613Rv9MaHrzaULxM4JvMYtDC8mUJGzpUPY1o0uoZes0bKbXfOetRL3TftchU0hrX7WVXd4472YYWvvuBMwNg5hdFaEXcBchr1ZYgUvBVhkQpK59k2Mdx2YmmGt4wqvUtbvX11ce/tYf+i5lN9WckS5gIhErzIT9oT/4yB2bYonHzEybZcmGGL4rJeJfPNZ4O7h9/WTeMmL3JJlY/PoyZxBwCAAA="
+    },
     "customScript": {
       "type": "string",
       "metadata": {
-        "description": "The custom Script for running on machines"
+        "description": "Custom Script setup.sh"
       },
-      "defaultValue": "H4sIANwZ6lsCA41RwUoDMRA9u18xtoLtIc1FPAgeRKUIHoTiSUVmk9ltaJqEZNa24Meb7C69iMWcJvNm3puZNz2XtXGyxrSuqunZa9DIBAHVBlsC4zTtKwwsWmLoerCUPbnEaC2w9zYdcTNmxQHeK8ivABzRpeAjizVzSCOiUCiKbBqjMuUx20U7hsk3vMNIIkQfSiUlofx2613Rv9MaHrzaULxM4JvMYtDC8mUJGzpUPY1o0uoZes0bKbXfOetRL3TftchU0hrX7WVXd4472YYWvvuBMwNg5hdFaEXcBchr1ZYgUvBVhkQpK59k2Mdx2YmmGt4wqvUtbvX11ce/tYf+i5lN9WckS5gIhErzIT9oT/4yB2bYonHzEybZcmGGL4rJeJfPNZ4O7h9/WTeMmL3JJlY/PoyZxBwCAAA="
+      "defaultValue": "H4sIAN/k6lsCA1NW1E/KzNNPSizO4OVSVkhOLFEoTi0pLdArzlCoUUivyixQ0LUEsoAKUs1MFHTLDXi5eLlSkzPyFZQ8UnNy8hXC84tyUhT09PSUeLkAijKy9E4AAAA="
     }
   },
   "variables": {
