@@ -45,4 +45,8 @@ if [ -f .ssh/id_rsa ]; then
 fi
 
 PORT=$((5000 + $INSTANCE))
+if [ $CATEGORY=="worker" ]; then
+  PORT=$((6000 + $INSTANCE))
+fi
+
 ssh $LINUX_USER@$IP -A -p $PORT
