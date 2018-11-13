@@ -100,6 +100,29 @@
         "defaultValue": 2,
         "minValue": 2
       },
+      "windowNamePrefix": {
+        "metadata": {
+          "description": "Manager Virtual Machine Name Prefix."
+        },
+        "type": "string",
+        "minLength": 1,
+        "defaultValue": "window"
+      },
+      "windowServerSize": {
+        "metadata": {
+          "description": "Manager Virtual Machine Size."
+        },
+        "type": "string",
+        "defaultValue": "Standard_DS2_v2"
+      },
+      "windowServerCount": {
+        "type": "int",
+        "metadata": {
+          "description": "Number of machines to deploy."
+        },
+        "defaultValue": 2,
+        "minValue": 2
+      },
       "adminUserName": {
         "type": "string",
         "metadata": {
@@ -296,6 +319,57 @@
             },
             "numberOfInstances": {
               "value": "[parameters('workerServerCount')]"
+            },
+            "adminUserName": {
+              "value": "[parameters('adminUserName')]"
+            },
+            "sshKeyData": {
+              "value": "[parameters('adminSshKey')]"
+            }
+          }
+        }
+      },
+      {
+        "name": "TemplateWindowVMasWorker",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2017-05-10",
+        "resourceGroup": "[variables('defaultGroup')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
+          "TemplateStorage",
+          "TemplateVNet",
+          "TemplateLoadBalancer"
+        ],
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('templateURL'), 'deployWindowVMas.json')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "prefix": {
+              "value": "[string(parameters('random'))]"
+            },
+            "subnetId": {
+              "value": "[reference('TemplateVNet').outputs.subnets.value.subnetId]"
+            },
+            "loadBalancerId": {
+              "value": "[reference('TemplateLoadBalancer').outputs.loadBalancer.value.id]"
+            },
+            "storageAccount": {
+              "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+            },
+            "storageKey": {
+              "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
+            },
+            "vmName": {
+              "value": "[parameters('windowNamePrefix')]"
+            },
+            "vmSize": {
+              "value": "[parameters('windowServerSize')]"
+            },
+            "numberOfInstances": {
+              "value": "[parameters('windowServerCount')]"
             },
             "adminUserName": {
               "value": "[parameters('adminUserName')]"

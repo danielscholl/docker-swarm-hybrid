@@ -1,0 +1,28 @@
+---
+- name: Ensure Package Aptitude is installed
+  apt:
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+    pkg: aptitude
+
+- name: Apply Latest OS Patches
+  apt:
+    state: latest
+    upgrade: yes
+
+- name: Ensure Common System Packages are installed
+  apt:
+    state: latest
+    pkg: "{{ item }}"
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - software-properties-common
+    - curl
+
+# Set vm.max_map_count to 262144 in /etc/sysctl.conf ** REQUIRED BY Elastic Search
+- sysctl:
+    name: vm.max_map_count
+    value: 262144
+    state: present

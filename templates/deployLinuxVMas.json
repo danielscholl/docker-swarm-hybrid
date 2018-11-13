@@ -203,7 +203,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('vmName'), '-vm', copyIndex(), '/CustmScript')]",
+      "name": "[concat(parameters('vmName'), '-vm', copyIndex(), '/CustomScript')]",
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "copy": {

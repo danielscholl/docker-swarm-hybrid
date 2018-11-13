@@ -20,6 +20,14 @@ fi
 if [ -z $UNIQUE ]; then
   UNIQUE=$(shuf -i 100-999 -n 1)
 fi
+if [ ! -z $1 ]; then WORKERS=$2; fi
+if [ -z $WORKERS ]; then
+  WORKERS=2
+fi
+if [ ! -z $2 ]; then MANAGERS=$2; fi
+if [ -z $MANAGERS ]; then
+  MANAGERS=2
+fi
 
 BASE=${PWD##*/}
 PRINCIPAL_NAME=${UNIQUE}-${BASE}
@@ -109,3 +117,48 @@ az deployment create --template-file azuredeploy.json  \
   --parameters servicePrincipalObjectId=$OBJECT_ID \
   --parameters random=$UNIQUE \
   --parameters adminUserName=$LINUX_USER
+
+
+##############################
+## Create Ansible Inventory ##
+##############################
+BASE=${PWD##*/}
+RESOURCE_GROUP=${UNIQUE}-${BASE}
+MANAGER_PORT=5000
+WORKER_PORT=6000
+INVENTORY="./ansible/inventories/azure/"
+GLOBAL_VARS="./ansible/inventories/azure/group_vars"
+mkdir -p ${INVENTORY};
+mkdir -p ${GLOBAL_VARS}
+
+tput setaf 2; echo "Retrieving Ansible Required Information ..." ; tput sgr0
+
+TENANT=$(az account show \
+  --query tenantId \
+  -otsv)
+
+LB_IP=$(az network public-ip show \
+  --resource-group ${RESOURCE_GROUP} \
+  --name ${UNIQUE}-lb-ip \
+  --query ipAddress \
+  -otsv)
+
+# Ansible Inventory
+tput setaf 2; echo 'Creating the ansible inventory files...' ; tput sgr0
+cat > ${INVENTORY}/hosts << EOF
+$(for (( c=0; c<$MANAGERS; c++ )); do echo "manager-vm$c ansible_host=$LB_IP ansible_port=$(($MANAGER_PORT + $c))"; done)
+$(for (( c=0; c<$WORKERS; c++ )); do echo "worker-vm$c ansible_host=$LB_IP ansible_port=$(($WORKER_PORT + $c))"; done)
+
+[manager]
+$(for (( c=0; c<$MANAGERS; c++ )); do echo "manager-vm$c"; done)
+
+[worker]
+$(for (( c=0; c<$WORKERS; c++ )); do echo "worker-vm$c"; done)
+EOF
+# cat > ${INVENTORY}/hosts << EOF
+# $(for (( c=0; c<$COUNT; c++ )); do echo "vm$c ansible_host=$LB_IP ansible_port=$(($BASE_PORT + $c))"; done)
+
+# [manager]
+
+# [worker]
+# EOF
