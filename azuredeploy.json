@@ -136,6 +136,13 @@
           "description": "Admin user public ssh key."
         },
         "minLength": 10
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Admin user account password."
+        },
+        "minLength": 12
       }
     },
     "variables": {
@@ -374,8 +381,8 @@
             "adminUserName": {
               "value": "[parameters('adminUserName')]"
             },
-            "sshKeyData": {
-              "value": "[parameters('adminSshKey')]"
+            "adminPassword": {
+              "value": "[parameters('adminPassword')]"
             }
           }
         }
