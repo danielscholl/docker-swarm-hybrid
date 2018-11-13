@@ -1,21 +1,9 @@
 ---
-- hosts: all
-  become: yes
-  vars:
-    ansible_python_interpreter: "/usr/bin/python3"
-  roles:
-    - patchOS
-    - reboot-server
-    - docker-ce
-    - reboot-server
-
 
 - hosts: manager
   become: true
   roles:
-    - file-share
     - swarm-manager
-
 
 - hosts: swarm_manager_bootstrap[0]
   become: true

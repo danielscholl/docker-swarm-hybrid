@@ -1,0 +1,8 @@
+---
+
+- name: join worker nodes to cluster
+  shell: >
+    docker swarm join
+    --advertise-addr={{ swarm_iface | default('eth0') }}:2377
+    --token={{ token }}
+    {{ groups['swarm_manager_ips'][0] }}:2377

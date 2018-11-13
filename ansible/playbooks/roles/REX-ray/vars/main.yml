@@ -1,0 +1,73 @@
+---
+# channel can be stable | unstable | staged
+rexray_channel: stable
+
+# service can be true of false - determines whether to start the rexray daemon
+rexray_service: false
+
+# loglevel can be on of debug, info, warn, error
+rexray_log_level: warn
+
+# list of storage drivers to enable
+# one of ec2 | gce | isilon | openstack | rackspace | scaleio | virtualbox | vmax | xtremio
+rexray_storage_drivers: []
+
+# AWS EC2 Storage Driver
+#rexray_aws_accesskey: ''
+#rexray_aws_secretkey: ''
+#rexray_aws_region: ''
+
+# GCE Storage Driver
+#rexray_gce_keyfile: ''
+
+# Isilon Storage Driver
+rexray_isilon_endpoint: ''
+rexray_isilon_insecure: false
+rexray_isilon_username: ''
+rexray_isilon_password: ''
+rexray_isilon_volumePath: ''
+rexray_isilon_nfsHost: ''
+
+# OpenStack Storage Driver
+rexray_os_authurl: ''
+#rexray_os_userid: 0
+#rexray_os_username: ''
+#rexray_os_password: ''
+#rexray_os_tenantid: 0
+#rexray_os_tenantname: ''
+#rexray_os_domainid: 0
+#rexray_os_domainname: ''
+#rexray_os_regionname: ''
+#rexray_os_availabilityzonename: ''
+
+# ScaleIO Storage Driver
+rexray_sio_endpoint: ''
+rexray_sio_insecure: false
+#rexray_sio_usecerts: false
+rexray_sio_username: ''
+#rexray_sio_password: ''
+#rexray_sio_systemid: 0
+#rexray_sio_systemname: ''
+#rexray_sio_protectiondomainid: 0
+#rexray_sio_protectiondomainname: ''
+#rexray_sio_storagepoolid: 0
+#rexray_sio_storagepoolname: ''
+
+# Virtual Box Storage Driver
+rexray_vbox_endpoint: ''
+rexray_vbox_user: ''
+rexray_vbox_pass: ''
+rexray_vbox_tls: false
+rexray_vbox_volume_path: ''
+rexray_vbox_controller_name: SATA
+#rexray_vbox_machine: ''
+
+# Azure Storage Driver
+rexray_azure_subscriptionid: ''
+rexray_azure_resourcegroup: ''
+rexray_azure_tenantid: ''
+rexray_azure_storageaccount: ''
+rexray_azure_storageaccesskey: ''
+rexray_azure_clientid: ''
+rexray_azure_clientsecret: ''
+rexray_azure_container: ''

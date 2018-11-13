@@ -1,0 +1,5 @@
+---
+- name: Create File Share Directory
+  file:
+    path: apps
+    state: directory

@@ -1,0 +1,27 @@
+---
+# This section commented out until packages have real repos
+# Until then, curl bash install is really the only way
+
+# OS-specific install routines
+#- include: install-RedHat.yml
+#  when: ansible_os_family == 'RedHat'
+
+#- include: install-Debian.yml
+#  when: ansible_os_family == 'Debian'
+
+- name: Ensure Package lssci is installed
+  apt:
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+    pkg: lsscsi
+
+- include: curlinstall.yml
+- include: config.yml
+
+- name: ensure rexray is running
+  service:
+    name: rexray
+    state: started
+  when: rexray_service
+
