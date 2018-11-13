@@ -1,0 +1,9 @@
+---
+
+docker_apt_key_url: https://download.docker.com/linux/ubuntu/gpg
+docker_apt_key_sig: 0EBFCD88
+docker_apt_repository: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+
+# Docker Compose Setup Information
+python_pip_version: 9.0.1
+docker_compose_version: 1.17.1

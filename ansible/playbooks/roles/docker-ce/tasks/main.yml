@@ -1,0 +1,61 @@
+---
+- name: Set UName Property
+  shell: uname -r
+  ignore_errors: yes
+  register: uname_result
+- debug: msg="{{ uname_result.stdout }}"
+
+- name: Set Current User
+  become: no
+  shell: whoami
+  register: user
+- debug: msg="{{ user.stdout }}"
+
+- name: Add Docker repository key
+  apt_key:
+    id: "{{ docker_apt_key_sig }}"
+    url: "{{ docker_apt_key_url }}"
+    state: present
+
+- name: Add Docker repository and update apt cache
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    update_cache: yes
+    state: present
+
+- name: Install Application Package
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+    - linux-image-extra-{{ uname_result.stdout }}
+    - linux-image-extra-virtual
+    - docker-ce
+    - python-dev
+    - python-pip
+    - htop
+
+
+  # ATTENTION: this task can potentially create new users!
+- name: Add users to the docker group
+  user:
+    name: "{{ user.stdout }}"
+    groups: docker
+    append: yes
+
+- name: Start docker service
+  service:
+    name: docker
+    state: started
+
+- name: Upgrade latest pip and docker-compose with pip
+  pip:
+    name: "{{ item.name }}"
+    state: latest
+  with_items:
+    - { name: pip, version: 9.0.1 }
+    - { name: docker-compose, version: 1.17.1 }
+  when: item.version=="latest"
+
+# Install Container Top Utility
+- name: Install Container Top
+  become: yes
+  shell: wget https://github.com/bcicen/ctop/releases/download/v0.6.1/ctop-0.6.1-linux-amd64 -O /usr/local/bin/ctop && chmod +x /usr/local/bin/ctop
