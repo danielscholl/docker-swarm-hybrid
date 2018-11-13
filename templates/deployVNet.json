@@ -71,6 +71,20 @@
             }
           },
           {
+            "name": "allow-rdp",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[parameters('remoteAccessACL')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1002,
+              "direction": "Inbound"
+            }
+          },
+          {
             "name": "allow-swarm",
             "properties": {
               "description": "Allow Swarm Manager",
