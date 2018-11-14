@@ -1,0 +1,9 @@
+version: '2.4'
+
+services:
+  mssql:
+    image: microsoft/windowsservercore
+    platform: windows
+  nginx:
+    image: nginx
+    platform: linux
