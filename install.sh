@@ -20,7 +20,7 @@ fi
 if [ -z $UNIQUE ]; then
   UNIQUE=$(shuf -i 100-999 -n 1)
 fi
-if [ ! -z $1 ]; then WORKERS=$2; fi
+if [ ! -z $1 ]; then WORKERS=$1; fi
 if [ -z $WORKERS ]; then
   WORKERS=2
 fi
