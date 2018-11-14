@@ -17,15 +17,10 @@ docker service create \
 ./lb.sh <unique> create visualizer 8080:8080
 ```
 
-Private Registry Swarm
----
-
-Set the environment file (.env) with the proper values
+Deploy the Hello World Stack
 ```bash
-REGISTRY_STORAGE=azure
-REGISTRY_STORAGE_AZURE_ACCOUNTNAME=<your_account_name>
-REGISTRY_STORAGE_AZURE_ACCOUNTKEY=<your_account_key>
-REGISTRY_STORAGE_AZURE_CONTAINER=<your_container>
+# Deploy the Private Registry Stack
+docker stack deploy --compose-file helloworld/docker-stack.yml helloworld
 ```
 
 

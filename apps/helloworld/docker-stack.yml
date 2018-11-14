@@ -3,22 +3,16 @@ version: '3.3'
 services:
   helloworld:
     image: tutum/hello-world
-    volumes:
-       - hello-data:/data
     ports:
       - '80:80'
     networks:
       - hellonet
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
-        constraints: [node.role == worker]
+        constraints:
+          - node.role == worker
+          - node.labels.os == linux
 
 networks:
   hellonet:
-
-volumes:
-  hello-data:
-    driver: rexray
-    driver_opts:
-      size: 1
