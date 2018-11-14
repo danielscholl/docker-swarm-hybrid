@@ -23,6 +23,11 @@ Deploy the Hello World Stack
 docker stack deploy --compose-file helloworld/docker-stack.yml helloworld
 ```
 
+Deploy the Voting App Stack
+```bash
+# Deploy the Private Registry Stack
+docker stack deploy --compose-file voting/docker-stack-simple.yml voting
+```
 
 Deploy the Private Registry Stack
 ```bash

@@ -1,3 +1,0 @@
-FROM logstash:lastest
-
-COPY ./logstash.conf /usr/share/logstash/pipeline/logstash.conf
