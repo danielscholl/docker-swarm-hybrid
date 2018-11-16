@@ -2,62 +2,76 @@ version: "3.2"
 
 services:
   vote:
-    image: dockersamples/examplevotingapp_vote:dotnet-nanoserver-1809
+    image: dockersamples/examplevotingapp_vote:dotnet-nanoserver-sac2016
     ports:
-      - "5000:80"
+      - mode: host
+        target: 80
+        published: 5000
     deploy:
-      mode: replicated
-      replicas: 4
+      endpoint_mode: dnsrr
       placement:
         constraints:
+          - node.role == worker
           - node.labels.os == windows
     networks:
       - frontend
       - backend
 
   result:
-    image: dockersamples/examplevotingapp_result:dotnet-nanoserver-1809
+    image: dockersamples/examplevotingapp_result:dotnet-nanoserver-sac2016
     environment:
       - "ConnectionStrings:ResultData=Server=db;Port=4000;Database=votes;User=root;SslMode=None"
     ports:
-      - "5001:80"
+      - mode: host
+        target: 80
+        published: 5001
     deploy:
+      endpoint_mode: dnsrr
       placement:
         constraints:
+          - node.role == worker
           - node.labels.os == windows
     networks:
       - frontend
       - backend
 
   worker:
-    image: dockersamples/examplevotingapp_worker:dotnet-nanoserver-1809
+    image: dockersamples/examplevotingapp_worker:dotnet-nanoserver-sac2016
     environment:
       - "ConnectionStrings:VoteData=Server=db;Port=4000;Database=votes;User=root;SslMode=None"
     deploy:
+      endpoint_mode: dnsrr
       mode: replicated
       replicas: 3
       placement:
         constraints:
+          - node.role == worker
           - node.labels.os == windows
     networks:
       - backend
 
   message-queue:
-    image: dockersamples/nats:nanoserver-1809
+    image: nats:nanoserver
     deploy:
+      endpoint_mode: dnsrr
       placement:
         constraints:
+          - node.role == worker
           - node.labels.os == windows
     networks:
       - backend
 
   db:
-    image: dockersamples/tidb:nanoserver-1809
+    image: dockersamples/tidb:nanoserver
     ports:
-      - "3306:4000"
+      - mode: host
+        target: 4000
+        published: 3306
     deploy:
+      endpoint_mode: dnsrr
       placement:
         constraints:
+          - node.role == worker
           - node.labels.os == windows
     networks:
       - backend

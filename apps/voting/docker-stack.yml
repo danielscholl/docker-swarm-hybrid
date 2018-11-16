@@ -11,13 +11,13 @@ services:
       placement:
         constraints:
           - node.role == worker
-          - node.labels.os == linux
       replicas: 1
       update_config:
         parallelism: 2
         delay: 10s
       restart_policy:
         condition: on-failure
+
   db:
     image: postgres:9.4
     volumes:
@@ -25,38 +25,40 @@ services:
     networks:
       - backend
     deploy:
-      constraints:
-          - node.role == manager
-          - node.labels.os == linux
+      placement:
+        constraints:
+          - node.role == worker
+
   vote:
     image: dockersamples/examplevotingapp_vote:before
     ports:
-      - 5000:80
+      - 8000:80
     networks:
       - frontend
     depends_on:
       - redis
     deploy:
-      constraints:
-        - node.role == worker
-        - node.labels.os == linux
+      placement:
+        constraints:
+          - node.role == worker
       replicas: 1
       update_config:
         parallelism: 2
       restart_policy:
         condition: on-failure
+
   result:
     image: dockersamples/examplevotingapp_result:before
     ports:
-      - 5001:80
+      - 8001:80
     networks:
       - backend
     depends_on:
       - db
     deploy:
-      constraints:
-        - node.role == worker
-        - node.labels.os == linux
+      placement:
+        constraints:
+          - node.role == worker
       replicas: 1
       update_config:
         parallelism: 2
@@ -79,7 +81,8 @@ services:
         max_attempts: 3
         window: 120s
       placement:
-        constraints: [node.role == manager]
+        constraints:
+          - node.role == worker
 
 networks:
   frontend:

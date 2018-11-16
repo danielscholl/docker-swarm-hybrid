@@ -1,7 +1,18 @@
 Docker Swarm Apps
 ===
 
-Swarm Visualizer
+Hello World
+---
+
+Deploy the Hello World Stack
+```bash
+# Deploy the Desired Private Registry Stack
+docker stack deploy --compose-file helloworld/docker-stack.yml helloworld
+docker stack deploy --compose-file helloworld/docker-stack-linux.yml helloworld
+docker stack deploy --compose-file helloworld/docker-stack-windows.yml helloworld
+```
+
+Visualizer
 ---
 
 ```bash
@@ -14,42 +25,32 @@ docker service create \
   dockersamples/visualizer
 
 # Add a LB rule to access the Visualizer (Optional)
-./lb.sh <unique> create visualizer 8080:8080
+./lb.sh create visualizer 8080:8080
 ```
 
-Deploy the Hello World Stack
-```bash
-# Deploy the Private Registry Stack
-docker stack deploy --compose-file helloworld/docker-stack.yml helloworld
-```
-
-Deploy the Voting App Stack
-```bash
-# Deploy the Private Registry Stack
-docker stack deploy --compose-file voting/docker-stack-simple.yml voting
-```
-
-Deploy the Private Registry Stack
-```bash
-# Deploy the Private Registry Stack
-docker stack deploy --compose-file registry/docker-stack.yml registry
-
-# Add a LB rule to access Private Registry WebSite (Optional)
-./lb.sh <unique> create visualizer 8081:5001
-```
-
-
-
-Hello World Test
+Voting App
 ---
 
+Deploy the Voting App Stack on Linux
 ```bash
-# Start the Stack
-docker stack deploy --compose-file helloworld/docker-stack.yml helloworld
+# Deploy the Private Registry Stack
+docker stack deploy --compose-file voting/docker-stack.yml voter-linux
 
-# Remove the Stack
-docker stack rm helloworld
+# Add a LB rule to access the Application
+./lb.sh create vote-lin 8000:8000
+./lb.sh create result-lin 8001:8001
 ```
+
+Deploy the Voting App Stack on Windows
+```bash
+# Deploy the Private Registry Stack
+docker stack deploy --compose-file voting/docker-stack-windows.yml voter-windows
+
+# Add a LB rule to access the Application
+./lb.sh create voter-win 8002:8002
+./lb.sh create result-win 8003:8003
+```
+
 
 
 

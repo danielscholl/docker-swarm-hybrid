@@ -4,9 +4,10 @@ services:
   helloworld:
     image: stefanscherer/whoami
     ports:
-      - '80:8080'
+      - '8000:8080'
     deploy:
       replicas: 3
       placement:
         constraints:
           - node.role == worker
+          - node.labels.os == linux
